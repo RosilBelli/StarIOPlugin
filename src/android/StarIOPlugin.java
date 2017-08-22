@@ -253,13 +253,13 @@ public class StarIOPlugin extends CordovaPlugin {
         return input.getBytes(java.nio.charset.Charset.forName("UTF-8"));
     }
 
-    private static byte [] createCommands(String inputText) {
+    private static byte [] createCommands(String inputText) throws UnsupportedEncodingException {
         ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
 
         builder.appendRaw(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
 
-        byte[] data = createCpUTF8("Hello World.\n");
+        byte[] data = "Hello World.\n".getBytes("US-ASCII");
         builder.appendRaw(data);
         byte[] dataCode128 = "{B0123456789".getBytes();
 
@@ -301,7 +301,9 @@ public class StarIOPlugin extends CordovaPlugin {
                 return false;
             }
 
+
             byte[] commandToSendToPrinter = createCommands(inputText);
+
             port.writePort(commandToSendToPrinter, 0, commandToSendToPrinter.length);
 
             port.setEndCheckedBlockTimeoutMillis(30000);// Change the timeout time of endCheckedBlock method.
@@ -323,6 +325,10 @@ public class StarIOPlugin extends CordovaPlugin {
             callbackContext.success("Printed");
 
         } catch (StarIOPortException e) {
+            sendEvent("printerImpossible", e.getMessage());
+            callbackContext.error(e.getMessage());
+
+        } catch (UnsupportedEncodingException e) {
             sendEvent("printerImpossible", e.getMessage());
             callbackContext.error(e.getMessage());
         } finally {
