@@ -18,6 +18,7 @@ import com.starmicronics.starioextension.ICommandBuilder;
 import com.starmicronics.starioextension.StarIoExt;
 import com.starmicronics.starioextension.StarIoExt.Emulation;
 import com.starmicronics.starioextension.ICommandBuilder.CutPaperAction;
+import com.starmicronics.starioextension.ICommandBuilder.InitializationType;
 
 
 
@@ -252,11 +253,13 @@ public class StarIOPlugin extends CordovaPlugin {
 
         byte[] data = "Hello World.\n".getBytes();
 
-        builder.append(data);
-        builder.append(data);
-        builder.append(data);
+        builder.appendUnderLine(true);
+        builder.appendMultiple(2, 2);
         builder.append(data);
         
+        builder.appendInitialization(InitializationType.Command);
+        builder.append(data);
+
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
         return builder.getCommands();
