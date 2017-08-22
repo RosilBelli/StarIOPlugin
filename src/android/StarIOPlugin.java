@@ -254,14 +254,12 @@ public class StarIOPlugin extends CordovaPlugin {
     private static byte [] createCommands(String inputText) {
         ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
+        builder.appendCodePage(ICommandBuilder.CodePageType.UTF8);
+        builder.appendInternational(ICommandBuilder.InternationalType.USA);
 
         byte[] data = getEncodedString("Hello World.\n");
 
-        builder.appendUnderLine(true);
-        builder.appendMultiple(2, 2);
         builder.append(data);
-
-        builder.appendInitialization(InitializationType.Command);
         builder.append(data);
 
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
