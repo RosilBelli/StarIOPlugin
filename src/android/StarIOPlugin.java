@@ -14,6 +14,12 @@ import com.starmicronics.stario.PortInfo;
 import com.starmicronics.stario.StarIOPort;
 import com.starmicronics.stario.StarIOPortException;
 import com.starmicronics.stario.StarPrinterStatus;
+import com.starmicronics.starioextension.ICommandBuilder;
+import com.starmicronics.starioextension.StarIoExt;
+import com.starmicronics.starioextension.StarIoExt.Emulation;
+import com.starmicronics.starioextension.ICommandBuilder.CutPaperAction;
+
+
 
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
@@ -229,17 +235,30 @@ public class StarIOPlugin extends CordovaPlugin {
 
         Context context = this.cordova.getActivity();
 
-
+        /*
         ArrayList<byte[]> list = new ArrayList<byte[]>();
         list.add(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
         list.add(createCpUTF8(receipt));
         list.add(new byte[] { 0x1b, 0x64, 0x02 }); // Cut
-        list.add(new byte[]{0x07}); // Kick cash drawer
+        list.add(new byte[]{0x07}); // Kick cash drawer*/
 
-        return sendCommand(context, portName, portSettings, list, callbackContext);
+        return sendCommand(context, portName, portSettings, receipt, callbackContext);
     }
 
-    private boolean sendCommand(Context context, String portName, String portSettings, ArrayList<byte[]> byteList, CallbackContext callbackContext) {
+
+    private static byte [] createCommands(String inputText) {
+        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
+        builder.beginDocument();
+
+        byte[] data = inputText.getBytes();
+
+        builder.append(data);
+        builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
+        builder.endDocument();
+        return builder.getCommands();
+    }
+
+    private boolean sendCommand(Context context, String portName, String portSettings, String inputText, CallbackContext callbackContext) {
         StarIOPort port = null;
         try {
 			/*
@@ -269,7 +288,7 @@ public class StarIOPlugin extends CordovaPlugin {
                 return false;
             }
 
-            byte[] commandToSendToPrinter = convertFromListByteArrayTobyteArray(byteList);
+            byte[] commandToSendToPrinter = createCommands(inputText);
             port.writePort(commandToSendToPrinter, 0, commandToSendToPrinter.length);
 
             port.setEndCheckedBlockTimeoutMillis(30000);// Change the timeout time of endCheckedBlock method.

@@ -11,23 +11,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/InteractiveObject/StarIOPlugin.git"
+    "url": "git+https://github.com/jhonylucas74/StarIOPlugin"
   },
   "keywords": [
     "ecosystem:cordova",
     "cordova-android",
     "cordova-ios"
   ],
-  "engines": [
-    {
+  "engines": [{
       "name": "cordova",
       "version": ">=3.4.0"
-    }
-  ],
+  }],
   "author": "Interactive Object",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/InteractiveObject/StarIOPlugin/issues"
+    "url": "https://github.com/jhonylucas74/StarIOPlugin/issues"
   },
-  "homepage": "https://github.com/InteractiveObject/StarIOPlugin#readme"
+  "homepage": "https://github.com/jhonylucas74/StarIOPlugin#readme"
 }

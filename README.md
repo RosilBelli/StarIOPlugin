@@ -8,6 +8,8 @@ How to use :
 
 * Install the plugin: `cordova plugin add https://github.com/InteractiveObject/StarIOPlugin.git`
 
+If this not work. Try install plugin with ``--nofetch`` flag.
+
 ## API
 
 ### Printer discovery
