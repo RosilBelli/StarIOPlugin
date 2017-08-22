@@ -250,9 +250,13 @@ public class StarIOPlugin extends CordovaPlugin {
         ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
 
-        byte[] data = inputText.getBytes();
+        byte[] data = "Hello World.\n".getBytes();
 
         builder.append(data);
+        builder.append(data);
+        builder.append(data);
+        builder.append(data);
+        
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
         return builder.getCommands();
