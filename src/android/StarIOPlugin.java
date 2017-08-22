@@ -19,6 +19,8 @@ import com.starmicronics.starioextension.StarIoExt;
 import com.starmicronics.starioextension.StarIoExt.Emulation;
 import com.starmicronics.starioextension.ICommandBuilder.CutPaperAction;
 import com.starmicronics.starioextension.ICommandBuilder.InitializationType;
+import com.starmicronics.starioextension.ICommandBuilder.BarcodeSymbology;
+import com.starmicronics.starioextension.ICommandBuilder.BarcodeWidth;
 
 
 
@@ -255,9 +257,12 @@ public class StarIOPlugin extends CordovaPlugin {
         ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
 
-        byte[] data = "Hello World.\n".getBytes();
+        //byte[] data = "Hello World.\n".getBytes();
+        //builder.appendRaw(data);
+        byte[] dataCode128 = "{B0123456789".getBytes();
 
-        builder.appendRaw(data);
+        builder.appendBarcode(dataCode128, BarcodeSymbology.Code128, BarcodeWidth.Mode1, 40, true);
+        builder.appendUnitFeed(32);
 
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
