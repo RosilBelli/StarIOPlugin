@@ -6,7 +6,7 @@ How to use :
 
 * Integrate the SDK into your project. Visit the [Star Micronics developer section](http://www.starmicronics.com/support/sdkdocumentation.aspx) and follow the appropriate documentation.
 
-* Install the plugin: `cordova plugin add https://github.com/InteractiveObject/StarIOPlugin.git`
+* Install the plugin: `cordova plugin add https://github.com/jhonylucas74/StarIOPlugin`
 
 If this not work. Try install plugin with ``--nofetch`` flag.
 
