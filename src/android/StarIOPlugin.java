@@ -247,11 +247,15 @@ public class StarIOPlugin extends CordovaPlugin {
     }
 
 
+    public static byte [] getEncodedString(String input){
+        return input.getBytes(java.nio.charset.Charset.forName("UTF-8"));
+    }
+
     private static byte [] createCommands(String inputText) {
-        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarPRNT);
+        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
 
-        byte[] data = "Hello World.\n".getBytes();
+        byte[] data = getEncodedString("Hello World.\n");
 
         builder.appendUnderLine(true);
         builder.appendMultiple(2, 2);
