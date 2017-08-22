@@ -341,7 +341,7 @@ public class StarIOPlugin extends CordovaPlugin {
         byte[] byteBuffer = null;
 
         try {
-            byteBuffer = inputText.getBytes("UTF-8");
+            byteBuffer = inputText.getBytes("CP437");
         } catch (UnsupportedEncodingException e) {
             byteBuffer = inputText.getBytes();
         }
