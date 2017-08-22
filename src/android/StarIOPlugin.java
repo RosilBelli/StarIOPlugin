@@ -259,12 +259,8 @@ public class StarIOPlugin extends CordovaPlugin {
 
         builder.appendRaw(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
 
-        byte[] data = "Hello World.\n".getBytes("US-ASCII");
+        byte[] data = "Hello World.\n".getBytes("ASCII");
         builder.appendRaw(data);
-        byte[] dataCode128 = "{B0123456789".getBytes();
-
-        builder.appendBarcode(dataCode128, BarcodeSymbology.Code128, BarcodeWidth.Mode1, 40, true);
-        builder.appendUnitFeed(32);
 
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
@@ -336,6 +332,8 @@ public class StarIOPlugin extends CordovaPlugin {
                 try {
                     StarIOPort.releasePort(port);
                 } catch (StarIOPortException e) {
+                    sendEvent("ImpossibleReleasePort", e.getMessage());
+                    callbackContext.error(e.getMessage());
                 }
             }
             return true;
