@@ -259,8 +259,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
         byte[] data = getEncodedString("Hello World.\n");
 
-        builder.append(data);
-        builder.append(data);
+        builder.appendRaw(data);
 
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
         builder.endDocument();
