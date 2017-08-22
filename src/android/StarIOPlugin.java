@@ -254,17 +254,18 @@ public class StarIOPlugin extends CordovaPlugin {
     }
 
     private static byte [] createCommands(String inputText) throws UnsupportedEncodingException {
-        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
-        builder.beginDocument();
+        //ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
+        //builder.beginDocument();
 
-        builder.appendRaw(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
+        //builder.appendRaw(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
 
         byte[] data = "Hello World.\n".getBytes("ASCII");
-        builder.appendRaw(data);
+        //builder.appendRaw(data);
 
-        builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
-        builder.endDocument();
-        return builder.getCommands();
+        //builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
+        //builder.endDocument();
+       // return builder.getCommands();
+        return data;
     }
 
     private boolean sendCommand(Context context, String portName, String portSettings, String inputText, CallbackContext callbackContext) {
