@@ -257,8 +257,10 @@ public class StarIOPlugin extends CordovaPlugin {
         ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
 
-        //byte[] data = "Hello World.\n".getBytes();
-        //builder.appendRaw(data);
+        builder.appendRaw(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
+
+        byte[] data = createCpUTF8("Hello World.\n");
+        builder.appendRaw(data);
         byte[] dataCode128 = "{B0123456789".getBytes();
 
         builder.appendBarcode(dataCode128, BarcodeSymbology.Code128, BarcodeWidth.Mode1, 40, true);
@@ -335,7 +337,7 @@ public class StarIOPlugin extends CordovaPlugin {
     }
 
 
-    private byte[] createCpUTF8(String inputText) {
+    private static byte[] createCpUTF8(String inputText) {
         byte[] byteBuffer = null;
 
         try {
