@@ -284,7 +284,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
             if (true == status.offline) {
                 //throw new StarIOPortException("A printer is offline");
-                sendEvent("printerOffline", null);
+                sendEvent("printerOffline", "Printer is offline before start the process.");
                 return false;
             }
 
@@ -304,7 +304,7 @@ public class StarIOPlugin extends CordovaPlugin {
                 return false;
             } else if (status.offline == true) {
                 callbackContext.error("Printer offline");
-                sendEvent("printerOffline", null);
+                sendEvent("printerOffline", "Printer is offline after try print comands.");
                 return false;
             }
             callbackContext.success("Printed");
@@ -368,6 +368,3 @@ public class StarIOPlugin extends CordovaPlugin {
 
 
 }
-
-
-
