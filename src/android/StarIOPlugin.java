@@ -248,7 +248,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
 
     private static byte [] createCommands(String inputText) {
-        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.EscPos);
+        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarPRNT);
         builder.beginDocument();
 
         byte[] data = "Hello World.\n".getBytes();
