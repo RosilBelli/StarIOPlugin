@@ -342,28 +342,28 @@ public class StarIOPlugin extends CordovaPlugin {
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
     }
 
-    private static byte [] createCommands(JSONObject params) {
+    private static byte [] createCommands(JSONObject params) throws JSONException {
 
         ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
         builder.beginDocument();
 
-        try {
-            JSONArray commands = params.getJSONArray("commands");
-            int widthPaper = params.getInt("paperWidth");
 
-            for (int i = 0; i < commands.length(); i++) {
-                JSONObject command = commands.getJSONObject(i);
-                String type = command.getString("type");
+        JSONArray commands = params.getJSONArray("commands");
+        int widthPaper = params.getInt("paperWidth");
 
-                if (type.equals("text")) {
-                    createText(builder, command, widthPaper);
-                }
-                 else if (type.equals("cutpaper")) {
-                    cutPaper(builder);
-                }
+        for (int i = 0; i < commands.length(); i++) {
+            JSONObject command = commands.getJSONObject(i);
+            String type = command.getString("type");
 
+            if (type.equals("text")) {
+                createText(builder, command, widthPaper);
             }
-        } catch (Exception e) { }
+             else if (type.equals("cutpaper")) {
+                cutPaper(builder);
+            }
+
+        }
+
 
         builder.endDocument();
         return builder.getCommands();
@@ -413,7 +413,12 @@ public class StarIOPlugin extends CordovaPlugin {
             sendEvent("printerImpossible", e.getMessage());
             callbackContext.error(e.getMessage());
 
-        } finally {
+        } catch (JSONException e) {
+            sendEvent("printerImpossible", e.getMessage());
+            callbackContext.error(e.getMessage());
+        }
+
+        finally {
             if (port != null) {
                 try {
                     StarIOPort.releasePort(port);
