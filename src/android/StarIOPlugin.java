@@ -22,6 +22,11 @@ import com.starmicronics.starioextension.ICommandBuilder.InitializationType;
 import com.starmicronics.starioextension.ICommandBuilder.BarcodeSymbology;
 import com.starmicronics.starioextension.ICommandBuilder.BarcodeWidth;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.graphics.Color;
 
 
 import org.apache.cordova.PluginResult;
@@ -30,6 +35,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 
 
@@ -253,19 +261,38 @@ public class StarIOPlugin extends CordovaPlugin {
         return input.getBytes(java.nio.charset.Charset.forName("UTF-8"));
     }
 
-    private static byte [] createCommands(String inputText) throws UnsupportedEncodingException {
-        //ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
-        //builder.beginDocument();
+    private static byte [] createCommands(String inputText) {
+        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
+        builder.beginDocument();
 
-        //builder.appendRaw(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
+        String textToPrint = "Hello world!";
 
-        byte[] data = "Hello World.\n".getBytes("ASCII");
-        //builder.appendRaw(data);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setAntiAlias(true);
+        Typeface typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
+        paint.setTypeface(typeface);
+        paint.setTextSize(10 * 2);
+        TextPaint textpaint = new TextPaint(paint);
 
-        //builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
-        //builder.endDocument();
-       // return builder.getCommands();
-        return data;
+        int paperWidth = 384;
+
+        android.text.StaticLayout staticLayout = new StaticLayout(textToPrint, textpaint, paperWidth, Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+        int height = staticLayout.getHeight();
+
+
+        Bitmap bitmap = Bitmap.createBitmap(staticLayout.getWidth(), height, Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(bitmap);
+        c.drawColor(Color.WHITE);
+        c.translate(0, 0);
+        staticLayout.draw(c);
+
+        builder.appendBitmap(bitmap, true);
+
+        builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
+        builder.endDocument();
+        return builder.getCommands();
     }
 
     private boolean sendCommand(Context context, String portName, String portSettings, String inputText, CallbackContext callbackContext) {
@@ -325,9 +352,6 @@ public class StarIOPlugin extends CordovaPlugin {
             sendEvent("printerImpossible", e.getMessage());
             callbackContext.error(e.getMessage());
 
-        } catch (UnsupportedEncodingException e) {
-            sendEvent("printerImpossible", e.getMessage());
-            callbackContext.error(e.getMessage());
         } finally {
             if (port != null) {
                 try {
