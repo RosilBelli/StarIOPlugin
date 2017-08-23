@@ -67,11 +67,7 @@ public class StarIOPlugin extends CordovaPlugin {
             this.portDiscovery(port, callbackContext);
             return true;
         }else {
-            String portName = args.getString(0);
-            String portSettings = getPortSettingsOption(portName);
-            String receipt = args.getString(1);
-
-            this.printReceipt(portName, portSettings, receipt, callbackContext);
+            this.printReceipt(args, callbackContext);
             return true;
         }
     }
@@ -242,18 +238,16 @@ public class StarIOPlugin extends CordovaPlugin {
     }
 
 
-    private boolean printReceipt(String portName, String portSettings, String receipt, CallbackContext callbackContext) throws JSONException {
+    private boolean printReceipt(JSONArray args, CallbackContext callbackContext) throws JSONException {
 
         Context context = this.cordova.getActivity();
 
-        /*
-        ArrayList<byte[]> list = new ArrayList<byte[]>();
-        list.add(new byte[] { 0x1b, 0x1d, 0x74, (byte)0x80 });
-        list.add(createCpUTF8(receipt));
-        list.add(new byte[] { 0x1b, 0x64, 0x02 }); // Cut
-        list.add(new byte[]{0x07}); // Kick cash drawer*/
+        JSONObject params = args.getJSONObject(0);
+        String portName = params.getString("port");
+        String portSettings = getPortSettingsOption(portName);
 
-        return sendCommand(context, portName, portSettings, receipt, callbackContext);
+
+        return sendCommand(context, portName, portSettings, params, callbackContext);
     }
 
 
@@ -261,72 +255,139 @@ public class StarIOPlugin extends CordovaPlugin {
         return input.getBytes(java.nio.charset.Charset.forName("UTF-8"));
     }
 
-    private static byte [] createCommands(String inputText) {
-        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
-        builder.beginDocument();
-
-        String textToPrint = "Hello world!";
+    private static void createText(ICommandBuilder builder, JSONObject command, int width) throws JSONException {
+        String textToPrint = command.getString("text");
+        JSONObject style = command.getJSONObject("style");
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.BLACK);
+
+        String color = command.getString("color");
+        if(color.equals("white")) {
+            paint.setColor(Color.WHITE);
+        } else {
+            paint.setColor(Color.BLACK);
+        }
+
         paint.setAntiAlias(true);
-        Typeface typeface = Typeface.create(Typeface.DEFAULT, Typeface.NORMAL);
+
+        Typeface family = Typeface.DEFAULT;
+
+        String font = command.getString("font");
+
+        if(font.equals("monospace")) {
+            family  = Typeface.MONOSPACE;
+        }
+        else if (font.equals("sans serife")) {
+            family  = Typeface.SANS_SERIF;
+        }
+        else if (font.equals("serife")) {
+            family  = Typeface.SERIF;
+        }
+
+        int weightInt = Typeface.NORMAL;
+        String weight = command.getString("weight");
+
+        if(weight.equals("bold")) {
+            weightInt = Typeface.BOLD;
+        }
+        else if (weight.equals("bold italic")) {
+            weightInt = Typeface.BOLD_ITALIC;
+        }
+        else if (weight.equals("italic")) {
+            weightInt = Typeface.ITALIC;
+        }
+
+
+        Typeface typeface = Typeface.create(family, weightInt);
         paint.setTypeface(typeface);
-        paint.setTextSize(10 * 2);
+
+        int size = style.getInt("size");
+        paint.setTextSize(size * 2);
+
         TextPaint textpaint = new TextPaint(paint);
 
-        int paperWidth = 384;
+        int paperWidth = width;
 
-        android.text.StaticLayout staticLayout = new StaticLayout(textToPrint, textpaint, paperWidth, Layout.Alignment.ALIGN_NORMAL, 1, 0, false);
+        Layout.Alignment align = Layout.Alignment.ALIGN_NORMAL;
+        String alignString = style.getString("align");
+        if (alignString.equals("center")){
+            align = Layout.Alignment.ALIGN_CENTER;
+        }
+        else if (alignString.equals("opposite")){
+            align = Layout.Alignment.ALIGN_OPPOSITE;
+        }
+
+        android.text.StaticLayout staticLayout = new StaticLayout(textToPrint, textpaint, paperWidth, align, 1, 0, false);
         int height = staticLayout.getHeight();
 
 
         Bitmap bitmap = Bitmap.createBitmap(staticLayout.getWidth(), height, Bitmap.Config.RGB_565);
         Canvas c = new Canvas(bitmap);
-        c.drawColor(Color.WHITE);
+
+        String bgcolor = style.getString("bgcolor");
+        if(bgcolor.equals("black")){
+            c.drawColor(Color.BLACK);
+        } else {
+            c.drawColor(Color.WHITE);
+        }
+
         c.translate(0, 0);
         staticLayout.draw(c);
 
         builder.appendBitmap(bitmap, true);
+    }
 
+    private static void cutPaper(ICommandBuilder builder){
         builder.appendCutPaper(CutPaperAction.PartialCutWithFeed);
+    }
+
+    private static byte [] createCommands(JSONObject params) {
+
+        ICommandBuilder builder = StarIoExt.createCommandBuilder(Emulation.StarGraphic);
+        builder.beginDocument();
+
+        try {
+            JSONArray commands = params.getJSONArray("commands");
+            int widthPaper = params.getInt("paperWidth");
+
+            for (int i = 0; i < commands.length(); i++) {
+                JSONObject command = commands.getJSONObject(i);
+                String type = command.getString("type");
+
+                if (type.equals("text")) {
+                    createText(builder, command, widthPaper);
+                }
+                 else if (type.equals("cutpaper")) {
+                    cutPaper(builder);
+                }
+
+            }
+        } catch (Exception e) { }
+
         builder.endDocument();
         return builder.getCommands();
     }
 
-    private boolean sendCommand(Context context, String portName, String portSettings, String inputText, CallbackContext callbackContext) {
+    private boolean sendCommand(Context context, String portName, String portSettings, JSONObject params, CallbackContext callbackContext) {
         StarIOPort port = null;
+
         try {
-			/*
-			 * using StarIOPort3.1.jar (support USB Port) Android OS Version: upper 2.2
-			 */
             port = StarIOPort.getPort(portName, portSettings, 10000, context);
+
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
+            } catch (InterruptedException e) { }
 
-			/*
-			 * Using Begin / End Checked Block method When sending large amounts of raster data,
-			 * adjust the value in the timeout in the "StarIOPort.getPort" in order to prevent
-			 * "timeout" of the "endCheckedBlock method" while a printing.
-			 *
-			 * If receipt print is success but timeout error occurs(Show message which is "There
-			 * was no response of the printer within the timeout period." ), need to change value
-			 * of timeout more longer in "StarIOPort.getPort" method.
-			 * (e.g.) 10000 -> 30000
-			 */
             StarPrinterStatus status = port.beginCheckedBlock();
 
             if (true == status.offline) {
-                //throw new StarIOPortException("A printer is offline");
                 sendEvent("printerOffline", "Printer is offline before start the process.");
                 return false;
             }
 
 
-            byte[] commandToSendToPrinter = createCommands(inputText);
+            byte[] commandToSendToPrinter = createCommands(params);
 
             port.writePort(commandToSendToPrinter, 0, commandToSendToPrinter.length);
 

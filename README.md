@@ -36,10 +36,91 @@ window.plugins.starPrinter.checkStatus(portName, function(error, result){
 });
 ```
 
-### Print receipt
+# Print receipt
+## Builder
+
+note: the function ``printreceipt`` doesn't exists anymore. Now you need use ``Builder``
+
+To print a receipt you need create a builder with this code:
 ```
-var myReceipt = "Title \n\n -- Price\r\r\r 20$\n\n ---\n";
-window.plugins.starPrinter.printReceipt(portName, myReceipt, function(error, result){
+  var builder = window.plugins.starPrinter.Builder({ width: 384 });
+```
+
+The width represent the paper width. With the instance of builder is possible now add commands.
+
+```
+  builder.text("Hello world", {});
+```
+In example a text command was added in pipeline. the second argument is a object that represent a style of text. Below follow all the possible values.
+
+* ``size``  : ``int`` | size of text.
+* ``color``  : ``string`` | color of text: ``black`` or ``white``.
+* ``font``  : ``string`` |  font family: ``monospace``, ``sans serife``, ``serife`` or ``default``.
+* ``weight``  : ``string`` | weight of text: ``bold``, ``bold italic``, ``italic`` or ``normal``.
+* ``align``  : ``string`` | align of text: ``center``, ``opposite`` or ``normal``.
+* ``bgcolor``  : ``string`` | background color: ``black`` or ``white``.
+
+Example with default configuration of style.
+
+```
+  builder.text("Hello world", {
+    size: 15,
+    color: 'black',
+    font: 'default',
+    weight: 'normal',
+    align: 'normal',
+    bgcolor: 'white'
+  });
+```
+
+Full example with 3 lines:
+
+```
+  window.plugins.starPrinter.Builder({ width: 384 })
+     .text("Hello world", {})
+     .text("This is a example", {})
+     .text("Say, good bye!", {})
+     .cutPaper()
+     .print(portName, function(err, result){
+       if (err) return console.log(err);
+       // code here...
+     });
+```
+
+Example with shared style:
+
+
+```
+  var myStyle = {
+    size: 23,
+    weight: 'bold',
+    align: 'center'
+  };
+
+  window.plugins.starPrinter.Builder({ width: 384 })
+     .text("Title in center", myStyle)
+     .text("I'm center too", myStyle)
+     .text("all is center", myStyle)
+     .cutPaper()
+     .print(portName, function(err, result){
+       if (err) return console.log(err);
+       // code here...
+     });
+```
+
+### Other functions
+
+### Cutpaper
+Cut the paper.
+```
+  builder.cutPaper();
+```
+
+### print
+
+Finally for print, just call ``print`` command.
+```
+builder.print(portName, function(error, result){
   if (error) {
     console.error(error);
   } else {
