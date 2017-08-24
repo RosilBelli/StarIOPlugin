@@ -54,22 +54,18 @@ The width represent the paper width. With the instance of builder is possible no
 In example a text command was added in pipeline. the second argument is a object that represent a style of text. Below follow all the possible values.
 
 * ``size``  : ``int`` | size of text.
-* ``color``  : ``string`` | color of text: ``black`` or ``white``.
 * ``font``  : ``string`` |  font family: ``monospace``, ``sans serife``, ``serife`` or ``default``.
 * ``weight``  : ``string`` | weight of text: ``bold``, ``bold italic``, ``italic`` or ``normal``.
 * ``align``  : ``string`` | align of text: ``center``, ``opposite`` or ``normal``.
-* ``bgcolor``  : ``string`` | background color: ``black`` or ``white``.
 
 Example with default configuration of style.
 
 ```
   builder.text("Hello world", {
     size: 15,
-    color: 'black',
     font: 'default',
     weight: 'normal',
     align: 'normal',
-    bgcolor: 'white'
   });
 ```
 

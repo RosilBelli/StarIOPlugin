@@ -261,13 +261,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
-
-        String color = command.getString("color");
-        if(color.equals("white")) {
-            paint.setColor(Color.WHITE);
-        } else {
-            paint.setColor(Color.BLACK);
-        }
+        paint.setColor(Color.BLACK);
 
         paint.setAntiAlias(true);
 
@@ -324,14 +318,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
         Bitmap bitmap = Bitmap.createBitmap(staticLayout.getWidth(), height, Bitmap.Config.RGB_565);
         Canvas c = new Canvas(bitmap);
-
-        String bgcolor = style.getString("bgcolor");
-        if(bgcolor.equals("black")){
-            c.drawColor(Color.BLACK);
-        } else {
-            c.drawColor(Color.WHITE);
-        }
-
+        c.drawColor(Color.WHITE);
         c.translate(0, 0);
         staticLayout.draw(c);
 
