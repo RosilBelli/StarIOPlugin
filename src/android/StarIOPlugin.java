@@ -267,7 +267,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
         Typeface family = Typeface.DEFAULT;
 
-        String font = command.getString("font");
+        String font = style.getString("font");
 
         if(font.equals("monospace")) {
             family  = Typeface.MONOSPACE;
@@ -280,7 +280,7 @@ public class StarIOPlugin extends CordovaPlugin {
         }
 
         int weightInt = Typeface.NORMAL;
-        String weight = command.getString("weight");
+        String weight = style.getString("weight");
 
         if(weight.equals("bold")) {
             weightInt = Typeface.BOLD;
