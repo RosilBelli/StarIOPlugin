@@ -262,8 +262,7 @@ public class StarIOPlugin extends CordovaPlugin {
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
-
-        paint.setAntiAlias(true);
+        paint.setAntiAlias(false);
 
         Typeface family = Typeface.DEFAULT;
 
