@@ -106,6 +106,25 @@ Example with shared style:
 
 ### Other functions
 
+### Image
+Add a image to builder. The first input must be a base64 encoded image. 
+```
+  builder.image('data:image/jpg;base64, ....');
+```
+
+The second param is optional, but you can change the width anda the align when pass a style.
+
+```
+  builder.image('data:image/jpg;base64, ....', {
+    width: 325,
+    align: 'center'
+  });
+```
+
+Style image options: 
+* ``width``  : ``int`` | size of image.
+* ``align``  : ``string`` | align of image: ``center``, ``left`` or ``right``.
+
 ### Cutpaper
 Cut the paper.
 ```

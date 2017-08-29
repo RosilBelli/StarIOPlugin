@@ -29,6 +29,7 @@ import android.graphics.Typeface;
 import android.graphics.Color;
 
 
+
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +40,8 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.Log;
+import android.util.Base64;
+import android.graphics.BitmapFactory;
 
 
 /**
@@ -255,6 +258,25 @@ public class StarIOPlugin extends CordovaPlugin {
         return input.getBytes(java.nio.charset.Charset.forName("UTF-8"));
     }
 
+    private static void createImage(ICommandBuilder builder, JSONObject command) throws JSONException {
+        String encodedImage = command.getString("image");
+        int width = command.getInt("width");
+        String align = command.getString("align");
+
+        byte[] decodedString = Base64.decode(encodedImage, Base64.URL_SAFE);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        if(align.equals("center")) {
+            builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Center);
+        }
+        else if (align.equals("right")) {
+            builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Right);
+        }
+        else if (align.equals("left")) {
+            builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Left);
+        }
+    }
+
     private static void createText(ICommandBuilder builder, JSONObject command, int width) throws JSONException {
         String textToPrint = command.getString("text");
         JSONObject style = command.getJSONObject("style");
@@ -346,6 +368,9 @@ public class StarIOPlugin extends CordovaPlugin {
             }
              else if (type.equals("cutpaper")) {
                 cutPaper(builder);
+            }
+            else if (type.equals("image")) {
+                createImage(builder, command);
             }
 
         }
