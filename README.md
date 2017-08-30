@@ -130,6 +130,11 @@ Cut the paper.
 ```
   builder.cutPaper();
 ```
+### Open Cash Drawer
+I'm not sure if this work with TSP100.
+```
+  builder.openCashDrawer();
+```
 
 ### print
 

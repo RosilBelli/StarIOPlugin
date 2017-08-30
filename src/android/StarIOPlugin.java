@@ -258,6 +258,10 @@ public class StarIOPlugin extends CordovaPlugin {
         return input.getBytes(java.nio.charset.Charset.forName("UTF-8"));
     }
 
+    private static void openCashDrawer(ICommandBuilder builder) {
+        builder.appendRaw(new byte[] { 0x07 });
+    }
+
     private static void createImage(ICommandBuilder builder, JSONObject command) throws JSONException {
         String encodedImage = command.getString("image");
         int width = command.getInt("width");
@@ -371,6 +375,9 @@ public class StarIOPlugin extends CordovaPlugin {
             }
             else if (type.equals("image")) {
                 createImage(builder, command);
+            }
+            else if(type.equals("opencash")) {
+                openCashDrawer(builder);
             }
 
         }

@@ -89,7 +89,12 @@ function Builder(options){
 
       return this;
     }
-  
+    
+    this.openCashDrawer = function(){
+      this.commands.push({ type: 'opencash' });
+      return this;
+    }
+
     this.cutPaper = function(){
       this.commands.push({ type: 'cutpaper' });
       return this;
