@@ -266,7 +266,7 @@ public class StarIOPlugin extends CordovaPlugin {
         String encodedImage = command.getString("image");
         String align = command.getString("align");
 
-        byte[] decodedString = Base64.decode(encodedImage, Base64.URL_SAFE);
+        byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
 
         BitmapFactory.Options bitmapLoadingOptions = new BitmapFactory.Options();
         bitmapLoadingOptions.inPreferredConfig = Bitmap.Config.RGB_565;
