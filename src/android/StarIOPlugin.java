@@ -267,7 +267,11 @@ public class StarIOPlugin extends CordovaPlugin {
         String align = command.getString("align");
 
         byte[] decodedString = Base64.decode(encodedImage, Base64.URL_SAFE);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        BitmapFactory.Options bitmapLoadingOptions = new BitmapFactory.Options();
+        bitmapLoadingOptions.inPreferredConfig = Bitmap.Config.RGB_565;
+
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length, bitmapLoadingOptions);
 
         if (align.equals("right")) {
             builder.appendBitmapWithAlignment(decodedByte, true, ICommandBuilder.AlignmentPosition.Right);
