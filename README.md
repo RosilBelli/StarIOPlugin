@@ -116,7 +116,6 @@ The second param is optional, but you can change the width anda the align when p
 
 ```
   builder.image('data:image/jpg;base64, ....', {
-    width: 325,
     align: 'center'
   });
 ```

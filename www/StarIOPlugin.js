@@ -77,13 +77,11 @@ function Builder(options){
 
     this.image = function(input, style){
       var _style     = style          || {};
-      _style.width   = _style.width   || 325;
       _style.align   = _style.align   || 'center';
 
       this.commands.push({
         type: 'image',
         image: input,
-        width: _style.width,
         align: _style.align
       });
 
