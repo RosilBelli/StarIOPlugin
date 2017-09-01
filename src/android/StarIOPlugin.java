@@ -265,17 +265,10 @@ public class StarIOPlugin extends CordovaPlugin {
     private static void createImage(ICommandBuilder builder, JSONObject command) throws JSONException {
         String encodedImage = command.getString("image");
 
-        String align = command.getString("align");
+        //String align = command.getString("align");
 
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
-
-        BitmapFactory.Options bitmapLoadingOptions = new BitmapFactory.Options();
-        bitmapLoadingOptions.inPreferredConfig = Bitmap.Config.RGB_565;
-
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length, bitmapLoadingOptions);
-        Canvas c = new Canvas(decodedByte);
-        c.drawColor(Color.WHITE);
-        c.translate(0, 0);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
         /*
         if (align.equals("right")) {
