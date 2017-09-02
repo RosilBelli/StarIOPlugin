@@ -272,14 +272,15 @@ public class StarIOPlugin extends CordovaPlugin {
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
 
-        if (align.equals("right")) {
+       /* if (align.equals("right")) {
             builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Right);
         }
         else if (align.equals("left")) {
             builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Left);
         } else {
-            builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Center);
-        }
+
+        }*/
+        builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Center);
         //builder.appendBitmap(decodedByte, true);
     }
 
