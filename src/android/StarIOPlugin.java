@@ -262,16 +262,24 @@ public class StarIOPlugin extends CordovaPlugin {
         builder.appendRaw(new byte[] { 0x07 });
     }
 
-    private static void createImage(ICommandBuilder builder, JSONObject command) throws JSONException {
+    private static Bitmap centerBitmap(Bitmap Src, int bitmapWidth, int width) {
+        Bitmap outputimage = Bitmap.createBitmap(width, Src.getHeight(), Bitmap.Config.RGB_565);
+        Canvas can = new Canvas(outputimage);
+        can.drawColor(Color.WHITE);
+        can.drawBitmap(Src, (can.getWidth()/2-(Src.getWidth()/2)), (float) (can.getHeight() * .25), null);
+        return outputimage;
+    }
+
+    private static void createImage(ICommandBuilder builder, JSONObject command, int width) throws JSONException {
         String encodedImage = command.getString("image");
 
         String align = command.getString("align");
-        int width = command.getInt("width");
+        int bitmapWidth = command.getInt("width");
 
         byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
-
+        Bitmap bitInCenter = centerBitmap(decodedByte, bitmapWidth, width);
        /* if (align.equals("right")) {
             builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Right);
         }
@@ -280,8 +288,8 @@ public class StarIOPlugin extends CordovaPlugin {
         } else {
 
         }*/
-        builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Center);
-        //builder.appendBitmap(decodedByte, true);
+        //builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Center);
+        builder.appendBitmap(decodedByte, true);
     }
 
     private static void createText(ICommandBuilder builder, JSONObject command, int width) throws JSONException {
@@ -377,7 +385,7 @@ public class StarIOPlugin extends CordovaPlugin {
                 cutPaper(builder);
             }
             else if (type.equals("image")) {
-                createImage(builder, command);
+                createImage(builder, command, widthPaper);
             }
             else if(type.equals("opencash")) {
                 openCashDrawer(builder);
