@@ -266,7 +266,7 @@ public class StarIOPlugin extends CordovaPlugin {
         Bitmap outputimage = Bitmap.createBitmap(width, Src.getHeight(), Bitmap.Config.RGB_565);
         Canvas can = new Canvas(outputimage);
         can.drawColor(Color.WHITE);
-        can.drawBitmap(Src, (can.getWidth()/2-(Src.getWidth()/2)), (float) (can.getHeight() * .25), null);
+        can.drawBitmap(Src, (can.getWidth()/2-(Src.getWidth()/2)), 0, null);
         return outputimage;
     }
 
@@ -289,7 +289,7 @@ public class StarIOPlugin extends CordovaPlugin {
 
         }*/
         //builder.appendBitmapWithAlignment(decodedByte, true, width, true, ICommandBuilder.AlignmentPosition.Center);
-        builder.appendBitmap(decodedByte, true);
+        builder.appendBitmap(bitInCenter, true);
     }
 
     private static void createText(ICommandBuilder builder, JSONObject command, int width) throws JSONException {
