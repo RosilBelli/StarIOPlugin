@@ -65,10 +65,12 @@ function Builder(options){
       _style.weight  = _style.weight  || 'normal';
       _style.align   = _style.align   || 'normal';
       _style.bgcolor = _style.bgcolor || 'white';
+
+      var text = input ? input: ''; 
   
       this.commands.push({
         type: 'text',
-        text: input,
+        text: text,
         style: _style
       });
   
